@@ -1,0 +1,90 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="calls">
+    <xsd:complexType>
+      <xsd:choice maxOccurs="unbounded">
+        <xsd:element name="call" type="CallType"/>
+      </xsd:choice>
+      <xsd:attribute name="count" type="xsd:positiveInteger" use="required"/>
+      <xsd:attribute name="backup_set" type="randomUuid" use="required"/>
+      <xsd:attribute name="backup_date" type="xsd:positiveInteger" use="required"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:simpleType name="nonemptyNormalizedString">
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:minLength value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="randomUuid">
+    <xsd:restriction base="xsd:token">
+      <xsd:length value="36" fixed="true" />
+      <xsd:pattern value="[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8-9a-b][0-9a-f]{3}-[0-9a-f]{12}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="uuid">
+    <xsd:restriction base="xsd:token">
+      <xsd:length value="36" fixed="true" />
+      <xsd:pattern value="[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="numericBoolean">
+    <xsd:restriction base="xsd:nonNegativeInteger">
+      <xsd:maxInclusive value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="typeIdentifier">
+    <xsd:restriction base="xsd:positiveInteger">
+      <xsd:enumeration value="1">
+        <xsd:annotation><xsd:documentation xml:lang="en">Incoming</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="2">
+        <xsd:annotation><xsd:documentation xml:lang="en">Outgoing</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="3">
+        <xsd:annotation><xsd:documentation xml:lang="en">Missed</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="4">
+        <xsd:annotation><xsd:documentation xml:lang="en">Voicemail</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="5">
+        <xsd:annotation><xsd:documentation xml:lang="en">Rejected</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="6">
+        <xsd:annotation><xsd:documentation xml:lang="en">Refused List</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="presentationIdentifier">
+    <xsd:restriction base="xsd:positiveInteger">
+      <xsd:enumeration value="1">
+        <xsd:annotation><xsd:documentation xml:lang="en">Allowed</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="2">
+        <xsd:annotation><xsd:documentation xml:lang="en">Restricted</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="3">
+        <xsd:annotation><xsd:documentation xml:lang="en">Unknown</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="4">
+        <xsd:annotation><xsd:documentation xml:lang="en">Payphone</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+ 
+  <xsd:complexType name="CallType">
+    <xsd:attribute name="date" type="xsd:positiveInteger" use="required"/>
+    <xsd:attribute name="contact_name" type="nonemptyNormalizedString" />
+    <xsd:attribute name="readable_date" type="nonemptyNormalizedString" />
+
+    <xsd:attribute name="number" type="xsd:normalizedString" use="required" />
+    <xsd:attribute name="duration" type="xsd:nonNegativeInteger" use="required" />
+    <xsd:attribute name="type" type="typeIdentifier" use="required" />
+    <xsd:attribute name="presentation" type="presentationIdentifier" use="required" />
+  </xsd:complexType>
+
+</xsd:schema>

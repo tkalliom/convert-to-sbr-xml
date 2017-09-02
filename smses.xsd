@@ -1,0 +1,161 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="smses">
+    <xsd:complexType>
+      <xsd:choice maxOccurs="unbounded">
+        <xsd:element name="sms" type="SmsType"/>
+        <xsd:element name="mms" type="MmsType"/>
+      </xsd:choice>
+      <xsd:attribute name="count" type="xsd:positiveInteger" use="required"/>
+      <xsd:attribute name="backup_set" type="randomUuid" use="required"/>
+      <xsd:attribute name="backup_date" type="xsd:positiveInteger" use="required"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:simpleType name="nonemptyNormalizedString">
+    <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="nonemptyToken">
+    <xsd:restriction base="xsd:string">
+      <xsd:minLength value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="randomUuid">
+    <xsd:restriction base="xsd:token">
+      <xsd:length value="36" fixed="true" />
+      <xsd:pattern value="[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8-9a-b][0-9a-f]{3}-[0-9a-f]{12}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="uuid">
+    <xsd:restriction base="xsd:token">
+      <xsd:length value="36" fixed="true" />
+      <xsd:pattern value="[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="numericBoolean">
+    <xsd:restriction base="xsd:nonNegativeInteger">
+      <xsd:maxInclusive value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="messageboxIdentifier">
+    <xsd:restriction base="xsd:positiveInteger">
+      <xsd:enumeration value="1">
+        <xsd:annotation><xsd:documentation xml:lang="en">In</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="2">
+        <xsd:annotation><xsd:documentation xml:lang="en">Out</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="3">
+        <xsd:annotation><xsd:documentation xml:lang="en">Draft</xsd:documentation></xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+ 
+  <xsd:complexType name="MessageType">
+    <xsd:attribute name="date" type="xsd:positiveInteger" use="required"/>
+    <xsd:attribute name="contact_name" type="xsd:string" />
+    <xsd:attribute name="readable_date" type="nonemptyNormalizedString" />
+
+    <xsd:attribute name="address" type="xsd:normalizedString" use="required" />
+    <xsd:attribute name="read" type="numericBoolean" use="required" />
+    <xsd:attribute name="locked" type="numericBoolean" use="required" />
+    <xsd:attribute name="date_sent" type="xsd:nonNegativeInteger" />
+  </xsd:complexType>
+
+  <xsd:complexType name="SmsType">
+    <xsd:complexContent>
+      <xsd:extension base="MessageType">
+        <xsd:attribute name="protocol" type="xsd:nonNegativeInteger" use="required" />
+        <xsd:attribute name="type" type="messageboxIdentifier" use="required" />
+        <xsd:attribute name="body" type="xsd:string" use="required" />
+        <xsd:attribute name="toa" type="nonemptyToken" use="required" />
+        <xsd:attribute name="sc_toa" type="nonemptyToken" use="required" />
+        <xsd:attribute name="service_center" type="nonemptyToken" use="required" />
+        <xsd:attribute name="status" type="xsd:integer" use="required" />
+        <xsd:attribute name="subject" type="xsd:normalizedString" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="MmsType">
+    <xsd:complexContent>
+      <xsd:extension base="MessageType">
+        <xsd:sequence minOccurs="1" maxOccurs="1">
+          <xsd:element name="parts" type="PartsType"/>
+	  <xsd:element name="addrs" type="AddrsType"/>
+        </xsd:sequence>
+        <xsd:attribute name="text_only" type="numericBoolean" use="required" />
+        <xsd:attribute name="ct_t" type="nonemptyToken" use="required" />
+        <xsd:attribute name="msg_box" type="messageboxIdentifier" use="required" />
+        <xsd:attribute name="sub" type="nonemptyToken" use="required" />
+        <xsd:attribute name="v" type="xsd:nonNegativeInteger" use="required" />
+        <xsd:attribute name="sequence_time" type="xsd:nonNegativeInteger" use="required" />
+        <xsd:attribute name="seen" type="numericBoolean" use="required" />
+        <xsd:attribute name="rr" type="nonemptyToken" use="required" />
+        <xsd:attribute name="ct_cls" type="nonemptyToken" use="required" />
+        <xsd:attribute name="retr_txt_cs" type="nonemptyToken" use="required" />
+        <xsd:attribute name="ct_l" type="nonemptyToken" use="required" />
+        <xsd:attribute name="phone_id" type="xsd:integer" use="required" />
+        <xsd:attribute name="m_size" type="nonemptyToken" use="required" />
+        <xsd:attribute name="exp" type="nonemptyToken" use="required" />
+        <xsd:attribute name="sub_cs" type="nonemptyToken" use="required" />
+        <xsd:attribute name="st" type="nonemptyToken" use="required" />
+        <xsd:attribute name="creator" type="nonemptyNormalizedString" use="required" />
+        <xsd:attribute name="tr_id" type="nonemptyToken" use="required" />
+        <xsd:attribute name="sub_id" type="xsd:integer" use="required" />
+        <xsd:attribute name="resp_st" type="nonemptyToken" use="required" />
+        <xsd:attribute name="m_id" type="uuid" use="required" />
+        <xsd:attribute name="pri" type="xsd:integer" use="required" />
+        <xsd:attribute name="m_type" type="xsd:integer" use="required" />
+        <xsd:attribute name="d_rpt" type="xsd:integer" use="required" />
+        <xsd:attribute name="d_tm" type="nonemptyToken" use="required" />
+        <xsd:attribute name="read_status" type="nonemptyToken" use="required" />
+        <xsd:attribute name="retr_txt" type="xsd:string" use="required" />
+        <xsd:attribute name="resp_txt" type="xsd:string" use="required" />
+        <xsd:attribute name="rpt_a" type="nonemptyToken" use="required" />
+        <xsd:attribute name="star_status" type="xsd:integer" use="required" />
+        <xsd:attribute name="m_cls" type="nonemptyToken" use="required" />
+         <xsd:attribute name="retr_st" type="nonemptyToken" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="PartsType">
+    <xsd:sequence>
+      <xsd:element name="part" minOccurs="1" maxOccurs="unbounded">
+         <xsd:complexType>
+           <xsd:attribute name="seq" type="xsd:integer" use="required"/>
+           <xsd:attribute name="ct" type="nonemptyToken" use="required"/>
+           <xsd:attribute name="name" type="nonemptyNormalizedString" use="required"/>
+           <xsd:attribute name="chset" type="nonemptyToken" use="required"/>
+           <xsd:attribute name="cd" type="nonemptyToken" use="required"/>
+           <xsd:attribute name="fn" type="nonemptyToken" use="required"/>
+           <xsd:attribute name="cid" type="nonemptyNormalizedString" use="required"/>
+           <xsd:attribute name="cl" type="nonemptyToken" use="required"/>
+           <xsd:attribute name="ctt_s" type="nonemptyToken" use="required"/>
+           <xsd:attribute name="ctt_t" type="nonemptyToken" use="required"/>
+           <xsd:attribute name="text" type="xsd:string" use="required"/>
+           <xsd:attribute name="data" type="nonemptyToken"/>
+         </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AddrsType">
+    <xsd:sequence>
+      <xsd:element name="addr" minOccurs="2" maxOccurs="unbounded">
+         <xsd:complexType>
+           <xsd:attribute name="address" type="nonemptyNormalizedString" use="required"/>
+           <xsd:attribute name="type" type="xsd:integer" use="required"/>
+           <xsd:attribute name="charset" type="xsd:integer" use="required"/>
+         </xsd:complexType>
+       </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
